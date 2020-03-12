@@ -5,6 +5,7 @@
 
 require 'octokit'
 require 'colored2'
+require 'dry/cli'
 
 module Githuh
   VERSION = '0.1.0'

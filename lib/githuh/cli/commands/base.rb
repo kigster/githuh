@@ -12,7 +12,7 @@ module Githuh
             base.instance_eval do
               option :api_token, required: false, desc: "Github API token; if not given, user.token is read from ~/.gitconfig"
               option :per_page, required: false, default: DEFAULT_PAGE_SIZE, desc: "Pagination page size for Github API"
-              option :verbose, type: :boolean, default: false, desc: 'Print verbose info'
+              option :verbose, type: :boolean, default: true, desc: 'Print verbose info'
 
             end
           end
@@ -22,7 +22,7 @@ module Githuh
 
         def call(api_token: nil,
                  per_page: DEFAULT_PAGE_SIZE,
-                 verbose: false)
+                 verbose: true)
 
           self.verbose  = verbose
           self.token    = api_token || token_from_gitconfig

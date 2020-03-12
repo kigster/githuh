@@ -1,3 +1,11 @@
+PATH
+  remote: .
+  specs:
+    githuh (0.1.0)
+      colored2 (~> 3)
+      dry-cli (~> 0.6)
+      octokit (~> 4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -16,6 +24,7 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     public_suffix (4.0.3)
+    rake (13.0.1)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -40,12 +49,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  awesome_print
-  colored2
-  dry-cli
-  octokit
-  rspec
-  rspec-its
+  awesome_print (~> 1)
+  bundler (~> 2)
+  githuh!
+  rake (~> 13)
+  rspec (~> 3)
+  rspec-its (~> 1)
 
 BUNDLED WITH
    2.1.2

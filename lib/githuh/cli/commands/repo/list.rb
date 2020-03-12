@@ -13,23 +13,26 @@ module Githuh
     module Commands
       module Repo
         class List < Base
-          FORMATS = %w(markdown json).freeze
+          FORMATS      = %w(markdown json).freeze
+          FORK_OPTIONS = %w(include only exclude).freeze
 
-          attr_accessor :file, :output, :repos, :format
+          attr_accessor :file, :output, :repos, :format, :forks
 
           desc 'List owned repositories and render the output in markdown or JSON'
 
-          option :file, required: false, desc: 'Output file. If not provided, STDOUT is used.'
-          option :format, values: FORMATS, desc: 'Output format'
+          option :file, required: false, desc: 'Output file. If not provided, STDERR is used.'
+          option :format, values: FORMATS, default: FORMATS.first, required: false, desc: 'Output format'
+          option :forks, type: :string, values: FORK_OPTIONS, default: FORK_OPTIONS.first, required: false, desc: 'Include or exclude forks'
 
-          def call(file: nil, format: nil, **opts)
+          def call(file: nil, format: nil, forks: nil, **opts)
             super(**opts)
 
+            self.forks  = forks
             self.format = (format || FORMATS.first).to_sym
             self.repos  = []
             self.output = StringIO.new
             self.file   = STDOUT
-            self.file   = file ? File.open(file, 'w') : STDOUT
+            self.file   = file ? File.open(file, 'w') : STDERR
 
             self.file.write send("render_as_#{format}", repositories)
           ensure
@@ -50,7 +53,16 @@ module Githuh
                 }
 
                 result = client.repos({}, query: options)
-
+                result.reject! do |r|
+                  case forks
+                    when 'exclude'
+                      r.fork
+                    when 'only'
+                      !r.fork
+                    when 'include'
+                      false
+                  end
+                end
                 break if result.empty?
 
                 result.size.times { print '.'.green } if verbose
@@ -79,8 +91,8 @@ module Githuh
 
               ### #{index + 1}. [#{repo.name}](#{repo.url}) (#{repo.stargazers_count} ★)
 
-              #{repo.language ? "Written in: ***#{repo.language}**" : ''}
-              #{repo.license ? "Distributed under **#{repo.license.name}** license" : ''}
+              #{repo.language ? "**#{repo.language}**. " : ''}
+              #{repo.license ? "Distributed under the **#{repo.license.name}** license." : ''}
 
               #{repo.description}
 
