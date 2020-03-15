@@ -31,6 +31,10 @@ Githuh works by implement subcomands:
 
 ### `repo list`
 
+This functionality was born out of the need to generate a brief but comprehensive, well-formatted list of prior inventions for a typical employment contract. 
+
+> NOTE: nothing in this library constitutes a legal advice. Use it at your own risk. For more information, please see [WARRANTY](WARANTY.md).
+
 ```bash
  1 ❯ githuh repo list --help
 Command:
