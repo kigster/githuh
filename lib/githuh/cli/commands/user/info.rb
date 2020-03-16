@@ -6,6 +6,7 @@ require "bundler/setup"
 require "dry/cli"
 require_relative '../base'
 require 'awesome_print'
+require 'json'
 
 module Githuh
   module CLI

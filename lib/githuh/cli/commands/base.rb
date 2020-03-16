@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'tty/box'
+require 'stringio'
+
 module Githuh
   module CLI
     module Commands
@@ -12,28 +15,69 @@ module Githuh
             base.instance_eval do
               option :api_token, required: false, desc: "Github API token; if not given, user.token is read from ~/.gitconfig"
               option :per_page, required: false, default: DEFAULT_PAGE_SIZE, desc: "Pagination page size for Github API"
-              option :verbose, type: :boolean, default: true, desc: 'Print verbose info'
-
+              option :info, type: :boolean, default: true, desc: 'Print useful info while running, such as the progress bar'
+              option :verbose, type: :boolean, default: false, desc: 'Print additional debugging info'
             end
           end
         end
 
-        attr_accessor :client, :token, :per_page, :verbose
+        attr_accessor :client, :token, :per_page, :verbose, :info, :box
 
         def call(api_token: nil,
                  per_page: DEFAULT_PAGE_SIZE,
-                 verbose: true)
+                 verbose: false,
+                 info: true)
 
           self.verbose  = verbose
+          self.info     = info
           self.token    = api_token || token_from_gitconfig
           self.per_page = per_page || DEFAULT_PAGE_SIZE
           self.client   = Octokit::Client.new(access_token: token)
+
+          print_userinfo(client.user.to_hash) if info
         end
 
         private
 
+        def print_userinfo(user_info)
+          duration = DateTime.now - DateTime.parse(user_info[:created_at].to_s)
+          years    = (duration / 365).to_i
+          months   = ((duration - years * 365) / 30).to_i
+          days     = (duration - years * 365 - months * 30).to_i
+
+          lines = []
+          lines << sprintf("  Github API Token: %s", h("#{token[0..9]}#{'.' * 20}#{token[-11..-1]}"))
+          lines << sprintf("      Current User: %s", h(user_info[:login]))
+          lines << sprintf("      Public Repos: %s", h(user_info[:public_repos].to_s))
+          lines << sprintf("         Followers: %s", h(user_info[:followers].to_s))
+          lines << sprintf("        Member For: %s", h(sprintf("%d years, %d months, %d days", years, months, days)))
+
+          self.box = TTY::Box.frame *lines,
+                                    padding: 1,
+                                    align:   :left,
+                                    title:   { top_center: Githuh::BANNER },
+                                    style:   {
+                                      fg:     :white,
+                                      border: {
+                                        fg: :bright_green
+                                      }
+                                    }
+
+          Githuh.stdout.print box
+        end
+
+        def h(arg)
+          arg.to_s.bold.blue
+        end
+
         def token_from_gitconfig
-          `git config --global --get user.token`.chomp
+          @token_from_gitconfig ||= `git config --global --get user.token`.chomp
+
+          return @token_from_gitconfig if @token_from_gitconfig
+
+          raise "No token found in your ~/.giconfig.\n" \
+                "To add, run the following command: \n" \
+                "git config --global --set user.token YOUR_GITHUB_TOKEN"
         end
       end
     end

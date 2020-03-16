@@ -45,22 +45,22 @@ module Githuh
             page = 0
             [].tap do |repo_list|
               loop do
-                print '.'.green if verbose
+                print '.'.green if info
                 options = {
-                    page:     page,
-                    per_page: per_page,
-                    type:     :owner,
+                  page:     page,
+                  per_page: per_page,
+                  type:     :owner,
                 }
 
                 result = client.repos({}, query: options)
                 result.reject! do |r|
                   case forks
-                    when 'exclude'
-                      r.fork
-                    when 'only'
-                      !r.fork
-                    when 'include'
-                      false
+                  when 'exclude'
+                    r.fork
+                  when 'only'
+                    !r.fork
+                  when 'include'
+                    false
                   end
                 end
                 break if result.empty?
@@ -70,7 +70,7 @@ module Githuh
                 repo_list << result
                 page += 1
               end
-              puts "  ✓".bold.green if verbose
+              puts "  ✓".bold.green if info
             end.flatten.sort_by(&:stargazers_count).reverse.uniq(&:name)
           end
 

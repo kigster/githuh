@@ -6,37 +6,69 @@
 require 'octokit'
 require 'colored2'
 require 'dry/cli'
+require 'forwardable'
 
 module Githuh
   VERSION = '0.1.0'
+  BANNER  = "Githuh Version #{VERSION}"
+  BINARY  = File.expand_path('../exe/githuh', __dir__).freeze
 
   module CLI
     module Commands
       extend Dry::CLI::Registry
     end
+  end
+end
 
-    class Launcher
-      attr_accessor :argv, :stdin, :stdout, :stderr, :kernel
+require 'githuh/cli/launcher'
 
-      def initialize(argv, stdin = STDIN, stdout = STDOUT, stderr = STDERR, kernel = nil)
-        self.argv   = argv
-        self.stdin  = stdin
-        self.stdout = stdout
-        self.stderr = stderr
-        self.kernel = kernel
+module Githuh
+  class << self
+    attr_accessor :launcher, :in_test
+
+    extend Forwardable
+
+    def_delegators :launcher, :stdout, :stderr, :stdin, :kernel, :argv
+
+    def configure_kernel_behavior(help: false)
+      Kernel.module_eval do
+        alias original_exit exit
+        alias original_puts puts
+        alias original_warn warn
       end
 
-      def execute
-        if argv.empty? || !(%w(--help -h) & argv).empty?
-          stdout.puts <<~BANNER
-
-            #{'Githuh CLI'.bold.yellow} #{::Githuh::VERSION.bold.green} — API client for Github.com.
-            #{'© 2020 Konstantin Gredeskoul, All rights reserved.  MIT License.'.cyan}
-
-          BANNER
+      Kernel.module_eval do
+        def puts(*args)
+          ::Githuh.stdout.puts(*args)
         end
-        ::Dry::CLI.new(Commands).call
+
+        def warn(*args)
+          ::Githuh.stderr.puts(*args)
+        end
       end
+
+      if in_test
+        Kernel.module_eval do
+          def exit(code)
+            ::Githuh.stderr.puts("RSpec: intercepted exit code: #{code}")
+          end
+        end
+      elsif help
+        Kernel.module_eval do
+          def exit(_code)
+            # for help, override default exit code with 0
+            original_exit(0)
+          end
+        end
+      else
+        Kernel.module_eval do
+          def exit(code)
+            original_exit(code)
+          end
+        end
+      end
+
+      Dry::CLI
     end
   end
 end

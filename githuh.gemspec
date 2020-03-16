@@ -1,12 +1,11 @@
-# frozen_string_literal: true
-
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
 require 'githuh'
 
 Gem::Specification.new do |spec|
   spec.name    = 'githuh'
-  spec.version = '0.1.0'
+  spec.version = Githuh::VERSION
   spec.authors = ['Konstantin Gredeskoul']
   spec.email   = %w(kigster@gmail.com)
 
@@ -26,7 +25,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'colored2', '~> 3'
   spec.add_dependency 'dry-cli', '~> 0.6'
   spec.add_dependency 'octokit', '~> 4'
+  spec.add_dependency 'tty-box', '~> 0.5'
 
+  spec.add_development_dependency 'aruba', '= 1.0.0'
   spec.add_development_dependency 'awesome_print', '~> 1'
   spec.add_development_dependency 'bundler', '~> 2'
   spec.add_development_dependency 'rake', '~> 13'

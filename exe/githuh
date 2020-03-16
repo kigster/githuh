@@ -12,4 +12,4 @@ $LOAD_PATH << lib_path if File.exist?(lib_path)
 
 require 'githuh'
 
-Githuh::CLI::Launcher.new(ARGV.dup).execute
+Githuh::CLI::Launcher.new(ARGV.dup).execute!
