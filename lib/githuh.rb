@@ -8,8 +8,9 @@ require 'colored2'
 require 'dry/cli'
 require 'forwardable'
 
+require_relative 'githuh/version'
+
 module Githuh
-  VERSION = '0.1.0'
   BANNER  = "Githuh Version #{VERSION}"
   BINARY  = File.expand_path('../exe/githuh', __dir__).freeze
 
