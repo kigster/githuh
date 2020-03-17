@@ -5,6 +5,7 @@
 require 'bundler/setup'
 require 'dry/cli'
 require 'json'
+require 'tty/progressbar'
 
 require_relative '../base'
 
@@ -13,26 +14,41 @@ module Githuh
     module Commands
       module Repo
         class List < Base
-          FORMATS      = %w(markdown json).freeze
-          FORK_OPTIONS = %w(include only exclude).freeze
+          FORMATS = {
+            markdown: 'md',
+            json:     'json'
+          }.freeze
 
-          attr_accessor :file, :output, :repos, :format, :forks
+          DEFAULT_FORMAT        = :markdown
+          DEFAULT_OUTPUT_FORMAT = "<username>.repositories.<format>"
+          FORK_OPTIONS          = %w(exclude include only).freeze
 
-          desc 'List owned repositories and render the output in markdown or JSON'
+          attr_accessor :filename, :file, :output, :repos, :format, :forks
 
-          option :file, required: false, desc: 'Output file. If not provided, STDERR is used.'
-          option :format, values: FORMATS, default: FORMATS.first, required: false, desc: 'Output format'
+          desc "List owned repositories and render the output in markdown or JSON\n" \
+               "  Default output file is " + DEFAULT_OUTPUT_FORMAT.bold.yellow
+
+          option :file, required: false, desc: 'Output file, overrides ' + DEFAULT_OUTPUT_FORMAT
+          option :format, values: FORMATS.keys, default: DEFAULT_FORMAT.to_s, required: false, desc: 'Output format'
           option :forks, type: :string, values: FORK_OPTIONS, default: FORK_OPTIONS.first, required: false, desc: 'Include or exclude forks'
 
           def call(file: nil, format: nil, forks: nil, **opts)
             super(**opts)
 
             self.forks  = forks
-            self.format = (format || FORMATS.first).to_sym
             self.repos  = []
             self.output = StringIO.new
-            self.file   = STDOUT
-            self.file   = file ? File.open(file, 'w') : STDERR
+            self.format = (format || DEFAULT_FORMAT).to_sym
+
+            self.filename = file || "#{user_info.login}.repositories.#{FORMATS[self.format]}"
+            self.file     = File.open(filename, 'w')
+
+            stdout.puts
+            puts TTY::Box.info(" Format : #{self.format}\n" \
+                               " File   : #{filename}\n" \
+                               " Forks  : #{self.forks}\n",
+                               width: ui_width, padding: 0)
+            puts
 
             self.file.write send("render_as_#{format}", repositories)
           ensure
@@ -43,9 +59,11 @@ module Githuh
 
           def repositories
             page = 0
+
+            bar = nil
+
             [].tap do |repo_list|
               loop do
-                print '.'.green if info
                 options = {
                   page:     page,
                   per_page: per_page,
@@ -53,6 +71,13 @@ module Githuh
                 }
 
                 result = client.repos({}, query: options)
+
+                if info && page == 0
+                  bar = create_progress_bar
+                end
+
+                bar&.advance
+
                 result.reject! do |r|
                   case forks
                   when 'exclude'
@@ -63,15 +88,25 @@ module Githuh
                     false
                   end
                 end
-                break if result.empty?
 
-                result.size.times { print '.'.green } if verbose
+                break if result.empty?
 
                 repo_list << result
                 page += 1
               end
-              puts "  ✓".bold.green if info
+
+              bar&.finish; puts
             end.flatten.sort_by(&:stargazers_count).reverse.uniq(&:name)
+          end
+
+          def create_progress_bar
+            number_of_pages = client.last_response.rels[:last].href.match(/page=(\d+).*$/)[1]
+            TTY::ProgressBar.new("[:bar]",
+                                 title:    'Fetching Repositories',
+                                 total:    number_of_pages.to_i,
+                                 width:    ui_width - 2,
+                                 head:     '',
+                                 complete: '▉'.magenta)
           end
 
           def render_as_markdown(repositories)

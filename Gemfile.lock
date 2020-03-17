@@ -1,11 +1,12 @@
 PATH
   remote: .
   specs:
-    githuh (0.1.0)
+    githuh (0.1.2)
       colored2 (~> 3)
       dry-cli (~> 0.6)
       octokit (~> 4)
       tty-box (~> 0.5)
+      tty-progressbar
 
 GEM
   remote: https://rubygems.org/
@@ -80,19 +81,22 @@ GEM
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
-    strings (0.1.6)
+    strings (0.1.8)
       strings-ansi (~> 0.1)
       unicode-display_width (~> 1.5)
       unicode_utils (~> 1.4)
-    strings-ansi (0.1.0)
+    strings-ansi (0.2.0)
     thor (1.0.1)
     tty-box (0.5.0)
       pastel (~> 0.7.2)
       strings (~> 0.1.6)
       tty-cursor (~> 0.7)
-    tty-color (0.5.0)
-    tty-cursor (0.7.0)
-    unicode-display_width (1.6.1)
+    tty-color (0.5.1)
+    tty-cursor (0.7.1)
+    tty-progressbar (0.11.0)
+      tty-screen (~> 0.5.0)
+    tty-screen (0.5.1)
+    unicode-display_width (1.7.0)
     unicode_utils (1.4.0)
 
 PLATFORMS

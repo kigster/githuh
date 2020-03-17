@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dry-cli', '~> 0.6'
   spec.add_dependency 'octokit', '~> 4'
   spec.add_dependency 'tty-box', '~> 0.5'
+  spec.add_dependency 'tty-progressbar'
 
   spec.add_development_dependency 'aruba', '= 1.0.0'
   spec.add_development_dependency 'awesome_print', '~> 1'
