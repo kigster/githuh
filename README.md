@@ -1,4 +1,6 @@
-# GITHUH
+![Ruby](https://github.com/kigster/githuh/workflows/Ruby/badge.svg)
+
+# Githuh — GitHub API client
 
 As in... **git? huh?**.
 
