@@ -17,7 +17,7 @@ module Githuh
 
           def call(**opts)
             super(**opts)
-            ap client.user.to_hash
+            puts JSON.pretty_generate(client.user.to_hash)
           end
         end
       end

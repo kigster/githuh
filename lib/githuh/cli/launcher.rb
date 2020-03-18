@@ -32,9 +32,9 @@ module Githuh
 
           BANNER
 
-          Githuh.configure_kernel_behavior(help: true)
+          Githuh.configure_kernel_behavior! help: true
         else
-          configure_kernel
+          Githuh.configure_kernel_behavior!
         end
 
         ::Dry::CLI.new(Commands).call(arguments: argv, out: stdout, err: stderr)
@@ -46,18 +46,16 @@ module Githuh
                              title:   { top_center: Githuh::BANNER },
                              width:   80,
                              style:   {
-                                 bg:     :red,
-                                 border: {
-                                     fg: :bright_yellow,
-                                     bg: :red
-                                 }
+                               bg:     :red,
+                               border: {
+                                 fg: :bright_yellow,
+                                 bg: :red
+                               }
                              })
         stderr.print box
-        Kernel.send(:original_exit, 10)
-      end
-
-      def configure_kernel
-        Githuh.configure_kernel_behavior
+      ensure
+        Githuh.restore_kernel_behavior!
+        exit(10) unless Githuh.in_test
       end
     end
   end

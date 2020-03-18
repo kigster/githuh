@@ -31,7 +31,7 @@ module Githuh
 
     def_delegators :launcher, :stdout, :stderr, :stdin, :kernel, :argv
 
-    def configure_kernel_behavior(help: false)
+    def configure_kernel_behavior!(help: false)
       Kernel.module_eval do
         alias original_exit exit
         alias original_puts puts
@@ -70,6 +70,15 @@ module Githuh
       end
 
       Dry::CLI
+    end
+
+    def restore_kernel_behavior!
+      Kernel.module_eval do
+        alias exit original_exit
+        alias puts original_puts
+        alias warn original_warn
+        alias exit original_exit
+      end
     end
   end
 end

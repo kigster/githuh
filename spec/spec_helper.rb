@@ -2,11 +2,31 @@
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-require 'githuh'
 require 'aruba'
 require 'aruba/rspec'
 require 'rspec/its'
 require 'timeout'
+
+if ARGV.empty?
+  require 'simplecov'
+  require 'simplecov-formatter-badge'
+
+  SimpleCov.formatter =
+    SimpleCov::Formatter::MultiFormatter.new(
+      [SimpleCov::Formatter::HTMLFormatter,
+       SimpleCov::Formatter::BadgeFormatter]
+    )
+
+  SimpleCov.start do
+    add_filter 'spec/'
+  end
+end
+
+require 'simplecov'
+
+SimpleCov.start
+
+require 'githuh'
 
 RSpec.configure do |spec|
   spec.expect_with :rspec do |expectations|
@@ -34,3 +54,11 @@ Aruba.configure do |config|
 end
 
 ::Dir.glob(::File.expand_path('../support/**/*.rb', __FILE__)).each { |f| require(f) }
+
+if ARGV.empty?
+  SimpleCov.at_exit do
+    SimpleCov.result.format!
+    # Moves generated coverage SVG from the ./coverage folder to ./docs/img folder.
+    RunHelper.update_coverage_badge!
+  end
+end

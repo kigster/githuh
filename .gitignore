@@ -1,7 +1,7 @@
 ## MAC OS
 .DS_Store
 .idea/
-
+kigster.repositories.*
 ## TEXTMATE
 *.tmproj
 tmtags
@@ -21,4 +21,3 @@ pkg
 
 ## PROJECT::SPECIFIC
 .yardoc
-doc

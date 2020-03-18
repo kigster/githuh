@@ -3,6 +3,7 @@
 require 'tty/box'
 require 'stringio'
 require 'githuh/version'
+require 'forwardable'
 
 module Githuh
   module CLI
@@ -10,9 +11,9 @@ module Githuh
       DEFAULT_PAGE_SIZE = 20
 
       class Base < Dry::CLI::Command
+        extend Forwardable
 
         def_delegators :context, :stdout, :stderr, :stdin, :kernel, :argv
-
 
         class << self
           def inherited(base)
@@ -20,7 +21,7 @@ module Githuh
             base.instance_eval do
               option :api_token, required: false, desc: "Github API token; if not given, user.token is read from ~/.gitconfig"
               option :per_page, required: false, default: DEFAULT_PAGE_SIZE, desc: "Pagination page size for Github API"
-              option :info, type: :boolean, default: true, desc: 'Print useful info while running, such as the progress bar'
+              option :info, type: :boolean, default: true, desc: 'Print UI elements, like a the progress bar'
               option :verbose, type: :boolean, default: false, desc: 'Print additional debugging info'
             end
           end
@@ -33,8 +34,7 @@ module Githuh
                  verbose: false,
                  info: true)
 
-          context = Githuh
-
+          self.context  = Githuh
           self.verbose  = verbose
           self.info     = info
           self.token    = api_token || token_from_gitconfig
@@ -45,6 +45,14 @@ module Githuh
         end
 
         protected
+
+        def puts(*args)
+          stdout.puts(*args)
+        end
+
+        def warn(*args)
+          stderr.puts(*args)
+        end
 
         def user_info
           @user_info ||= client.user
@@ -75,10 +83,10 @@ module Githuh
                                     align:   :left,
                                     title:   { top_center: Githuh::BANNER },
                                     style:   {
-                                        fg:     :white,
-                                        border: {
-                                            fg: :bright_green
-                                        }
+                                      fg:     :white,
+                                      border: {
+                                        fg: :bright_green
+                                      }
                                     }
 
           Githuh.stdout.print box
