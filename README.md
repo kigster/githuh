@@ -93,6 +93,11 @@ This command prints the info about currently authenticated user.
 
 ```
 
-## Copyright
+## Contributing
 
-© 2020 Konstantin Gredeskoul
+Please submit a pull request at https://github.com/kigster/githuh/pulls
+
+##  License
+
+&copy; 2020 Konstantin Gredeskoul, [MIT License](LICENSE)
+
