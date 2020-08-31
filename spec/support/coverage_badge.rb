@@ -9,9 +9,10 @@ class CoverageBadge
   COVERAGE_RESULT = ::File.expand_path('../../coverage/.last_run.json', __dir__).freeze
   COVERAGE_IMAGE  = ::File.expand_path('../../docs/img/coverage.svg', __dir__).freeze
   COVERAGE_COLORS = {
-    (85..100) => '#1BFF00',
-    (65...85) => '#84E707',
-    (55...65) => '#69BC07',
+    (90..100) => '#1BFF00',
+    (67...90) => '#4BAF00',
+    (60...67) => '#69A707',
+    (55...60) => '#69BC07',
     (45...55) => '#BFB900',
     (25...45) => '#9D5100',
     (0...25) => '#CC0E00'
@@ -39,36 +40,36 @@ class CoverageBadge
     ::JSON.parse(::File.read(COVERAGE_RESULT))['result']['covered_percent'].to_f
   end
 
+  TEMPLATE = ERB.new(
+    File.read(
+      File.expand_path(
+        './coverage_badge.svg.erb',
+        __dir__
+      )
+    ).freeze
+  ).freeze
+
+  BadgeTuple = Struct.new(:title, :cov, :color)
+
   def template(title, percentage)
-    color = '#f00'
+    badge_tuple = BadgeTuple.new(title, '%d%%' % percentage.to_i)
+    badge_tuple.color = '#f00'
 
     COVERAGE_COLORS.each_pair do |range, coverage_color|
       if range.include?(percentage.to_i)
-        color = coverage_color
+        badge_tuple.color = coverage_color
         break
       end
     end
 
-    cov = sprintf('%.1f', percentage)
-
-    file_content = <<~SVGTEMPLATE
-      <?xml version="1.0"?>
-      <svg xmlns="http://www.w3.org/2000/svg" width="130" height="20">
-        <linearGradient id="a" x2="0" y2="100%">
-          <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
-          <stop offset="1" stop-opacity=".1"/>
-        </linearGradient>
-        <rect rx="3" width="130" height="20" fill="#555"/>
-        <rect rx="3" x="80" width="50" height="20" fill="#{color}"/>
-        <rect rx="3" width="130" height="20" fill="url(#a)"/>
-        <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="10">
-          <text x="34.5" y="15" fill="#010101" fill-opacity=".3">#{title}</text>
-          <text x="35.5" y="14">#{title}</text>
-          <text x="105.5" y="15" fill="#010101" fill-opacity=".3">#{cov}%</text>
-          <text x="106.5" y="14">#{cov}%</text>
-        </g>
-      </svg>
-    SVGTEMPLATE
-    file_content
+    begin
+      badge_tuple.instance_eval do
+        return TEMPLATE.result(binding)
+      end
+    rescue StackError => e
+      warn "ERROR: #{e.message.bold.red}"
+      warn e.backtrace&.reverse&.join("\n")
+      raise e
+    end
   end
 end

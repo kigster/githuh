@@ -53,7 +53,7 @@ module Githuh
                                width:   ui_width,
                                padding: 1)
             puts
-            # —————————— actually get all repositories ———————————————
+            # —————————— actually get all repositories ———————————————
             self.file.write send("render_as_#{format}", repositories)
             # ————————————————————————————————————————————————————————
 

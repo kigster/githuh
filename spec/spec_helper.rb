@@ -60,5 +60,6 @@ if ARGV.empty?
     SimpleCov.result.format!
     # Moves generated coverage SVG from the ./coverage folder to ./docs/img folder.
     RunHelper.update_coverage_badge!
+    CoverageBadge.new.generate!
   end
 end
