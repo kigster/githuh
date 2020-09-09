@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby -W0
+ENV['RUBYOPT'] = 'W0'
 # frozen_string_literal: true
 
 # vim: ft=ruby

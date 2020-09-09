@@ -51,7 +51,7 @@ module Githuh
         stderr.print box
       ensure
         Githuh.restore_kernel_behavior!
-        exit(10) unless Githuh.in_test
+        exit(0) unless Githuh.in_test
       end
 
       def trace?
