@@ -84,6 +84,7 @@ module Githuh
 end
 
 require 'githuh/cli/commands/base'
-require 'githuh/cli/commands/user/info'
 require 'githuh/cli/commands/version'
+require 'githuh/cli/commands/user/info'
 require 'githuh/cli/commands/repo/list'
+require 'githuh/cli/commands/issue/export'

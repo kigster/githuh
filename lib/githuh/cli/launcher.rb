@@ -3,6 +3,7 @@
 require 'dry/cli'
 require 'forwardable'
 require 'tty/box'
+require 'tty/screen'
 
 require 'githuh'
 module Githuh
@@ -34,14 +35,27 @@ module Githuh
 
         self.command = ::Dry::CLI.new(::Githuh::CLI::Commands)
         command.call(arguments: argv, out: stdout, err: stderr)
-
       rescue StandardError => e
-        box = TTY::Box.frame('ERROR:', ' ', e.message, **BOX_OPTIONS)
-        stderr.print box
+        lines = [e.message.gsub(/\n/, ', ')]
+        if e.backtrace
+          lines << ''
+          lines.concat(e.backtrace)
+        end
 
+        box = TTY::Box.frame(*lines,
+                             **BOX_OPTIONS.merge(
+                               width: TTY::Screen.width,
+                               title: { top_center: "┤ #{e.class.name} ├" },
+                             ))
+        stderr.puts
+        stderr.print box
       ensure
         Githuh.restore_kernel_behavior!
-        exit(10) unless Githuh.in_test
+        exit(0) unless Githuh.in_test
+      end
+
+      def trace?
+        argv.include?('-t') || argv.include?('--trace')
       end
     end
 
@@ -55,16 +69,16 @@ module Githuh
     BOX_OPTIONS = {
       padding: 1,
       align:   :left,
-      title:   { top_center: Githuh::BANNER },
+      title:   { top_center: "┤ #{Githuh::BANNER} ├" },
       width:   80,
       style:   {
-        bg:     :red,
+        bg:     :yellow,
+        fg:     :black,
         border: {
-          fg: :bright_yellow,
-          bg: :red
+          fg: :red,
+          bg: :yellow
         }
       }
     }.freeze
-
   end
 end

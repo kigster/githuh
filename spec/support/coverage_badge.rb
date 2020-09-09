@@ -23,7 +23,10 @@ class CoverageBadge
     @badge_image = COVERAGE_IMAGE
   end
 
-  def generate!(percentage = read_from_file)
+  def generate!(percentage = nil)
+    return unless File.exist?(COVERAGE_RESULT)
+
+    percentage ||= read_from_file
     output.puts
     output.puts ' • Attempting to generate the Coverage Badge for '.green + sprintf('%.2f%%', percentage).bold.yellow + ' coverage...'.green
     File.open(badge_image, 'w') { |f| f.write(template('COVERAGE', sprintf('%.2f', percentage))) }
