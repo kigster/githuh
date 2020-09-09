@@ -68,16 +68,16 @@ module Githuh
         end
 
         # Overwrite me
-        def pages
+        def bar_size
           0
         end
 
-        def create_progress_bar(number_of_pages = pages, title: DEFAULT_TITLE)
+        def create_progress_bar(size = bar_size, title: DEFAULT_TITLE)
           return unless info || verbose
 
           TTY::ProgressBar.new("[:bar]",
                                title:    title,
-                               total:    number_of_pages.to_i,
+                               total:    size.to_i,
                                width:    ui_width - 2,
                                head:     '',
                                complete: '▉'.magenta)
@@ -98,23 +98,23 @@ module Githuh
           lines << sprintf("         Followers: %s", h(user_info.followers.to_s))
           lines << sprintf("        Member For: %s", h(sprintf("%d years, %d months, %d days", years, months, days)))
 
-          self.box = TTY::Box.frame *lines,
-                                    padding: 1,
+          self.box = TTY::Box.frame(*lines,
+                                    padding: 0,
                                     width:   ui_width,
                                     align:   :left,
-                                    title:   { top_center: Githuh::BANNER },
+                                    title:   { top_center: "┤ #{Githuh::BANNER} ├" },
                                     style:   {
                                       fg:     :white,
                                       border: {
                                         fg: :bright_green
                                       }
-                                    }
+                                    })
 
           Githuh.stdout.print box
         end
 
         def h(arg)
-          arg.to_s.bold.blue
+          arg.to_s
         end
 
         def token_from_gitconfig

@@ -24,11 +24,13 @@ Gem::Specification.new do |spec|
   spec.require_paths         = ['lib']
   spec.required_ruby_version = '>= 2.3'
 
+  spec.add_dependency 'activesupport'
   spec.add_dependency 'colored2', '~> 3'
   spec.add_dependency 'dry-cli', '~> 0.6'
   spec.add_dependency 'octokit', '~> 4'
-  spec.add_dependency 'tty-box', '~> 0.5'
+  spec.add_dependency 'tty-box'
   spec.add_dependency 'tty-progressbar'
+  spec.add_dependency 'tty-screen'
 
   spec.add_development_dependency 'aruba', '= 1.0.0'
   spec.add_development_dependency 'awesome_print', '~> 1'
@@ -36,6 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13'
   spec.add_development_dependency 'rspec', '~> 3'
   spec.add_development_dependency 'rspec-its', '~> 1'
+  spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'simplecov-formatter-badge'
 end

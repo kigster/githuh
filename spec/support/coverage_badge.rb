@@ -23,7 +23,7 @@ class CoverageBadge
     @badge_image = COVERAGE_IMAGE
   end
 
-  def generate!(percentage = 0)
+  def generate!(percentage = nil)
     return unless File.exist?(COVERAGE_RESULT)
 
     percentage ||= read_from_file

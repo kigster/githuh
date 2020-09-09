@@ -83,6 +83,7 @@ module Githuh
                 filter_result!(result)
 
                 break if result.empty?
+
                 result.each { |repo| printf "%s\n", repo.name } if verbose
 
                 repo_list << result
@@ -96,7 +97,7 @@ module Githuh
             end.flatten.sort_by(&:stargazers_count).reverse.uniq(&:name)
           end
 
-          def pages
+          def bar_size
             client.last_response.rels[:last].href.match(/page=(\d+).*$/)[1].to_i
           end
 

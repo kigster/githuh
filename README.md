@@ -1,4 +1,4 @@
-![Ruby](https://github.com/kigster/githuh/workflows/Ruby/badge.svg)
+[![Ruby](https://github.com/kigster/githuh/workflows/Ruby/badge.svg)](https://github.com/kigster/githuh/actions?query=workflow%3ARuby)
 ![Coverage](docs/img/coverage.svg)
 
 # Githuh — GitHub API client
@@ -23,11 +23,16 @@ git config --global --set user.token <token>
 After that:
 
 ```bash
-❯ githuh
+❯ be exe/githuh -h
+
+Githuh CLI 0.2.1 — API client for Github.com.
+© 2020 Konstantin Gredeskoul, All rights reserved.  MIT License.
+
 Commands:
+  githuh issue [SUBCOMMAND]
   githuh repo [SUBCOMMAND]
   githuh user [SUBCOMMAND]
-  githuh version                        # Print version
+  githuh version                         # Print version
 ```
 
 Githuh works by implement subcomands:
@@ -91,6 +96,47 @@ This command prints the info about currently authenticated user.
                :html_url => "https://github.com/kigster",
                ..............
 
+```
+
+### `issue export`
+
+Use this command to export all issues for a given repo into either a raw JSON format (using `--format=json`) or into a Pivotal Tracker-compatible CSV format (default format).
+
+```bash
+❯ be exe/githuh issue export -h
+
+Githuh CLI 0.2.1 — API client for Github.com.
+© 2020 Konstantin Gredeskoul, All rights reserved.  MIT License.
+
+Command:
+  githuh issue export
+
+Usage:
+  githuh issue export REPO
+
+Description:
+  Export Repo issues into a CSV or JSON format
+  Default output file is <username>.<repo>.issues.<format>
+
+Arguments:
+  REPO                 # REQUIRED Name of the repo, eg "rails/rails"
+
+Options:
+  --api-token=VALUE    # Github API token; if not given, user.token is read from ~/.gitconfig
+  --per-page=VALUE     # Pagination page size for Github API, default: 20
+  --[no-]info          # Print UI elements, like a the progress bar, default: true
+  --[no-]verbose       # Print additional debugging info, default: false
+  --file=VALUE         # Output file, overrides <username>.<repo>.issues.<format>
+  --format=VALUE       # Output format: (json/csv), default: "csv"
+  --help, -h           # Print this help
+```
+
+#### Example
+
+Eg, to export all issues of this repo into Pivotal Tracker compatibel CSV:
+
+```bash
+githuh issue export kigster/githuh -v -i --api-token=XXXX --format=json
 ```
 
 ## Contributing
