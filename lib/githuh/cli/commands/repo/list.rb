@@ -67,7 +67,7 @@ module Githuh
 
           def repositories
             page = 0
-            bar = nil
+            bar  = nil
 
             [].tap do |repo_list|
               loop do
@@ -78,13 +78,11 @@ module Githuh
                 }
 
                 result = client.repos({}, query: options)
-                bar    = create_progress_bar if info && !verbose && page == 0
+                bar('Repositories')&.advance
 
-                bar&.advance
                 filter_result!(result)
 
                 break if result.empty?
-
                 result.each { |repo| printf "%s\n", repo.name } if verbose
 
                 repo_list << result
@@ -98,14 +96,8 @@ module Githuh
             end.flatten.sort_by(&:stargazers_count).reverse.uniq(&:name)
           end
 
-          def create_progress_bar
-            number_of_pages = client.last_response.rels[:last].href.match(/page=(\d+).*$/)[1]
-            TTY::ProgressBar.new("[:bar]",
-                                 title:    'Fetching Repositories',
-                                 total:    number_of_pages.to_i,
-                                 width:    ui_width - 2,
-                                 head:     '',
-                                 complete: '▉'.magenta)
+          def pages
+            client.last_response.rels[:last].href.match(/page=(\d+).*$/)[1].to_i
           end
 
           def render_as_markdown(repositories)
@@ -138,22 +130,22 @@ module Githuh
           def filter_result!(result)
             result.reject! do |r|
               fork_reject = case forks
-                            when 'exclude'
-                              r.fork
-                            when 'only'
-                              !r.fork
-                            when 'include'
-                              false
-                            end
+              when 'exclude'
+                r.fork
+              when 'only'
+                !r.fork
+              when 'include'
+                false
+              end
 
               private_reject = case private
-                               when true
-                                 !r.private
-                               when false
-                                 r.private
-                               when nil
-                                 false
-                               end
+              when true
+                !r.private
+              when false
+                r.private
+              when nil
+                false
+              end
 
               fork_reject || private_reject
             end

@@ -9,6 +9,7 @@ module Githuh
   module CLI
     module Commands
       DEFAULT_PAGE_SIZE = 20
+      DEFAULT_TITLE     = 'Operation Progress'
 
       class Base < Dry::CLI::Command
         extend Forwardable
@@ -38,7 +39,7 @@ module Githuh
           self.verbose  = verbose
           self.info     = info
           self.token    = api_token || token_from_gitconfig
-          self.per_page = per_page || DEFAULT_PAGE_SIZE
+          self.per_page = per_page.to_i || DEFAULT_PAGE_SIZE
           self.client   = Octokit::Client.new(access_token: token)
 
           print_userinfo if info
@@ -60,6 +61,26 @@ module Githuh
 
         def ui_width
           80
+        end
+
+        def bar(title = DEFAULT_TITLE)
+          @bar ||= create_progress_bar(title: title)
+        end
+
+        # Overwrite me
+        def pages
+          0
+        end
+
+        def create_progress_bar(number_of_pages = pages, title: DEFAULT_TITLE)
+          return unless info || verbose
+
+          TTY::ProgressBar.new("[:bar]",
+                               title:    title,
+                               total:    number_of_pages.to_i,
+                               width:    ui_width - 2,
+                               head:     '',
+                               complete: '▉'.magenta)
         end
 
         private

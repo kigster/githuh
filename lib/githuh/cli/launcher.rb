@@ -58,10 +58,11 @@ module Githuh
       title:   { top_center: Githuh::BANNER },
       width:   80,
       style:   {
-        bg:     :red,
+        bg:     :yellow,
+        fg:     :black,
         border: {
-          fg: :bright_yellow,
-          bg: :red
+          fg: :red,
+          bg: :yellow
         }
       }
     }.freeze
