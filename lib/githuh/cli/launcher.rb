@@ -6,6 +6,8 @@ require 'tty/box'
 require 'tty/screen'
 
 require 'githuh'
+require 'githuh/cli/commands/base'
+
 module Githuh
   module CLI
     class Launcher
@@ -33,11 +35,12 @@ module Githuh
           Githuh.configure_kernel_behavior!
         end
 
+        # noinspection RubyYardParamTypeMatch
         self.command = ::Dry::CLI.new(::Githuh::CLI::Commands)
         command.call(arguments: argv, out: stdout, err: stderr)
       rescue StandardError => e
         lines = [e.message.gsub(/\n/, ', ')]
-        if e.backtrace
+        if e.backtrace && !(ARGV & %w[-v --verbose]).empty?
           lines << ''
           lines.concat(e.backtrace)
         end

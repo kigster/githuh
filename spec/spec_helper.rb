@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+ENV['RUBYOPT'] = '-W0'
+
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'aruba'
@@ -22,16 +24,14 @@ if ARGV.empty?
   end
 end
 
-require 'simplecov'
-
-SimpleCov.start
-
 require 'githuh'
 
 RSpec.configure do |spec|
   spec.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
+
+  spec.raise_errors_for_deprecations!
 
   spec.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
@@ -54,6 +54,8 @@ Aruba.configure do |config|
 end
 
 ::Dir.glob(::File.expand_path('../support/**/*.rb', __FILE__)).each { |f| require(f) }
+
+load_aruba!
 
 if ARGV.empty?
   SimpleCov.at_exit do

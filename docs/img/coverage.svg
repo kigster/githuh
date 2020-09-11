@@ -8,10 +8,10 @@
   <rect rx="5" width="130" height="20" fill="url(#a)"/>
   <rect rx="5" x="80" width="50" height="20" fill="#4BAF00"/>
   <rect rx="5" x="80" width="50" height="20" fill="url(#a)"/>
-  <g fill="#fff" text-anchor="middle" font-weight="800" font-family="Consolas,DejaVu Sans,Verdana,Geneva,sans-serif" font-size="12">
+  <g fill="#fff" text-anchor="middle" font-weight="500" font-family="Consolas,DejaVu Sans,Verdana,Geneva,sans-serif" font-size="10">
     <text x="40.5" y="15" fill="#010101" fill-opacity=".3">COVERAGE</text>
     <text x="41.5" y="14">COVERAGE</text>
-    <text x="105.5" y="15" fill="#010101" fill-opacity=".3">61%</text>
-    <text x="106.5" y="14">61%</text>
+    <text x="105.5" y="15" fill="#010101" fill-opacity=".3">68%</text>
+    <text x="106.5" y="14">68%</text>
   </g>
 </svg>

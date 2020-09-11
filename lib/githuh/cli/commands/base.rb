@@ -28,7 +28,7 @@ module Githuh
           end
         end
 
-        attr_accessor :client, :token, :per_page, :verbose, :info, :box, :context
+        attr_accessor :token, :per_page, :verbose, :info, :box, :context
 
         def call(api_token: nil,
                  per_page: DEFAULT_PAGE_SIZE,
@@ -38,11 +38,20 @@ module Githuh
           self.context  = Githuh
           self.verbose  = verbose
           self.info     = info
-          self.token    = api_token || token_from_gitconfig
+          self.token    = api_token || determine_github_token
           self.per_page = per_page.to_i || DEFAULT_PAGE_SIZE
-          self.client   = Octokit::Client.new(access_token: token)
 
-          print_userinfo if info
+          if info
+            begin
+              print_userinfo
+            rescue StandardError
+              nil
+            end
+          end
+        end
+
+        def client
+          @client ||= Octokit::Client.new(access_token: token)
         end
 
         protected
@@ -83,6 +92,17 @@ module Githuh
                                complete: '▉'.magenta)
         end
 
+        def determine_github_token
+          @github_token ||= (ENV['GITHUB_TOKEN'] || `git config --global --get user.token`.chomp)
+
+          return @github_token unless @github_token.empty?
+
+          raise "No token was found in your ~/.gitconfig.\n" \
+                "To add, run the following command: \n" \
+                "git config --global --set user.token YOUR_GITHUB_TOKEN\n" \
+                "or set environment variable GITHUB_TOKEN"
+        end
+
         private
 
         def print_userinfo
@@ -115,16 +135,6 @@ module Githuh
 
         def h(arg)
           arg.to_s
-        end
-
-        def token_from_gitconfig
-          @token_from_gitconfig ||= `git config --global --get user.token`.chomp
-
-          return @token_from_gitconfig unless @token_from_gitconfig.empty?
-
-          raise "No token was found in your ~/.gitconfig.\n" \
-                "To add, run the following command: \n" \
-                "git config --global --set user.token YOUR_GITHUB_TOKEN"
         end
       end
     end

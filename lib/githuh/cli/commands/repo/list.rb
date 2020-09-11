@@ -98,7 +98,9 @@ module Githuh
           end
 
           def bar_size
-            client.last_response.rels[:last].href.match(/page=(\d+).*$/)[1].to_i
+            return 1 if client&.last_response.nil?
+
+            client&.last_response.rels[:last].href.match(/page=(\d+).*$/)[1].to_i
           end
 
           def render_as_markdown(repositories)

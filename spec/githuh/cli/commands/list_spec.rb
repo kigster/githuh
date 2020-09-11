@@ -3,11 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Githuh::CLI::Commands::Repo::List, type: :aruba do
-  include_context 'aruba setup'
-
   context 'repo list --help' do
     let(:args) { %w(repo list -h) }
-
+    include_context 'aruba setup'
     subject { output }
 
     it { should match /Usage/ }
