@@ -1,0 +1,12 @@
+---
+label-to-estimates:
+  XXL(13 eng day): 15
+  XL(8 eng day): 15
+  xs(<=1 eng day): 3
+  L(5 eng day): 15
+  m(3 eng day): 9
+  s(2 eng day): 6
+labels-to-remove:
+  implemented: false
+labels-to-rename:
+  implemented: false

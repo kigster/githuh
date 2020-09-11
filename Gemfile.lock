@@ -5,6 +5,7 @@ PATH
       activesupport
       colored2 (~> 3)
       dry-cli (~> 0.6)
+      hashie
       octokit (~> 4)
       tty-box
       tty-progressbar
@@ -61,6 +62,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffi (1.13.1)
     gherkin (5.1.0)
+    hashie (4.1.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     minitest (5.14.2)
@@ -73,7 +75,7 @@ GEM
     parallel (1.19.2)
     parser (2.7.1.4)
       ast (~> 2.4.1)
-    pastel (0.7.3)
+    pastel (0.7.4)
       equatable (~> 0.6)
       tty-color (~> 0.5)
     public_suffix (4.0.6)

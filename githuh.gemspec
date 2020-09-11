@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'octokit', '~> 4'
   spec.add_dependency 'tty-box'
   spec.add_dependency 'tty-progressbar'
+  spec.add_dependency 'hashie'
   spec.add_dependency 'tty-screen'
 
   spec.add_development_dependency 'aruba', '= 1.0.0'

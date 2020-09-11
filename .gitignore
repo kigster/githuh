@@ -23,3 +23,5 @@ pkg
 .yardoc
 .ruby-version
 *.csv
+.envrc.local
+tmp/**
