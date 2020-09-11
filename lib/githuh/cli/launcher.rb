@@ -40,7 +40,7 @@ module Githuh
         command.call(arguments: argv, out: stdout, err: stderr)
       rescue StandardError => e
         lines = [e.message.gsub(/\n/, ', ')]
-        if e.backtrace && !((ARGV & %w[-v --verbose]).empty?)
+        if e.backtrace && !(ARGV & %w[-v --verbose]).empty?
           lines << ''
           lines.concat(e.backtrace)
         end

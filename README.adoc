@@ -75,8 +75,24 @@ Options:
   --[no-]verbose       # Print additional debugging info, default: false
   --file=VALUE         # Output file, overrides <username>.<repo>.issues.<format>
   --format=VALUE       # Output format: (json/csv), default: "csv"
+  --mapping=VALUE      # YAML file with label to estimates mapping
   --help, -h           # Print this help
 ----
+
+==== Label Mappings
+
+The export suppots a configurable mapping of Github labels to Pivotal Tracker points. To use this feature, create a YAML file similar to the xref:config/label-mapping.yml[config/label-mapping.yml] provided:
+
+[source,yaml]
+----
+---
+label-to-estimates:
+  Large: 5
+  Medium: 3
+  Small: 1
+----
+
+Then add `--mapping=<filename>` argument to the export command.
 
 ==== Example
 

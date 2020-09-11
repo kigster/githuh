@@ -20,9 +20,7 @@ def load_aruba!
       Hashie::Mash.new({ name:       'John',
                          created_at: Time.now,
                          login:      'john',
-                         repos:      repos
-                       }
-      )
+                         repos:      repos })
     end
 
     before do

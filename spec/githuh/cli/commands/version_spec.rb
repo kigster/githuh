@@ -6,7 +6,6 @@ require 'githuh'
 require 'aruba/rspec'
 
 RSpec.describe Githuh::CLI::Commands::Version, type: :aruba do
-
   context 'githuh version' do
     let(:args) { %w(version) }
     include_context 'aruba setup'

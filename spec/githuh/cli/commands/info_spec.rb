@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Githuh::CLI::Commands::User::Info, type: :aruba do
-
   context 'user info' do
     let(:args) { %w(user info --help) }
     include_context 'aruba setup'

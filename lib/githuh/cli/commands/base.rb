@@ -42,7 +42,11 @@ module Githuh
           self.per_page = per_page.to_i || DEFAULT_PAGE_SIZE
 
           if info
-            print_userinfo rescue nil
+            begin
+              print_userinfo
+            rescue StandardError
+              nil
+            end
           end
         end
 

@@ -27,10 +27,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport'
   spec.add_dependency 'colored2', '~> 3'
   spec.add_dependency 'dry-cli', '~> 0.6'
+  spec.add_dependency 'hashie'
   spec.add_dependency 'octokit', '~> 4'
   spec.add_dependency 'tty-box'
   spec.add_dependency 'tty-progressbar'
-  spec.add_dependency 'hashie'
   spec.add_dependency 'tty-screen'
 
   spec.add_development_dependency 'aruba', '= 1.0.0'

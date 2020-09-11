@@ -44,12 +44,12 @@ module Githuh
             raise ArgumentError, "argument <repo> is required" unless repo
             raise ArgumentError, "argument <repo> is not a repository, expected eg 'rails/rails'" unless repo =~ %r{/}
 
+            self.mapping = {}
             if mapping && ::File.exist?(mapping)
               self.mapping = ::YAML.safe_load(::File.read(mapping))['label-to-estimates'] || {}
-              Export.const_set(:LabelEstimates, mapping)
-            else
-              Export.const_set(:LabelEstimates, {})
             end
+
+            Export.const_set(:LabelEstimates, self.mapping)
 
             self.issues = []
             self.output = StringIO.new
@@ -166,7 +166,7 @@ module Githuh
           def print_conclusion
             puts
             puts TTY::Box.info("Success: written a total of #{record_count} records to #{filename}",
-                               **{ width: ui_width, padding: 1})
+                               **{ width: ui_width, padding: 1 })
             puts
           end
 
@@ -180,7 +180,7 @@ module Githuh
           end
 
           def file_name(repo)
-            "#{repo.gsub(%r{/}, ".")}.issues.#{FORMATS[self.format.to_sym]}"
+            "#{repo.gsub(%r{/}, '.')}.issues.#{FORMATS[self.format.to_sym]}"
           end
         end
       end
