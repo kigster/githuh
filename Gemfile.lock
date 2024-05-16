@@ -76,7 +76,7 @@ GEM
     rainbow (3.0.0)
     rake (13.0.1)
     regexp_parser (1.7.1)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -128,8 +128,6 @@ GEM
     tty-progressbar (0.11.0)
       tty-screen (~> 0.5.0)
     tty-screen (0.5.1)
-    tzinfo (2.0.5)
-      concurrent-ruby (~> 1.0)
     unicode-display_width (1.7.0)
     unicode_utils (1.4.0)
 
