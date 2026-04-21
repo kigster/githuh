@@ -26,7 +26,7 @@ end
 task build: :permissions
 
 YARD::Rake::YardocTask.new(:doc) do |t|
-  t.files = %w[lib/**/*.rb exe/*.rb - README.adoc LICENSE.txt WARRANTY.md CHANGELOG.md]
+  t.files = %w[lib/**/*.rb exe/*.rb - README.md LICENSE.txt WARRANTY.md CHANGELOG.md]
   t.options.unshift("--title", '"FlowEngine — DSL + AST for buildiong complex flows in Ruby."')
   t.after = -> { exec("open doc/index.html") } if RUBY_PLATFORM =~ /darwin/
 end
