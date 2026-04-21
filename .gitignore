@@ -21,7 +21,6 @@ pkg
 
 ## PROJECT::SPECIFIC
 .yardoc
-.ruby-version
 *.csv
 .envrc.local
 .env

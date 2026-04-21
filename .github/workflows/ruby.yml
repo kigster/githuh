@@ -8,7 +8,5 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '4.0' # Not needed with a .ruby-version, .tool-versions or mise.toml
     - run: bundle install -j 4
     - run: bundle exec rspec --format documentation
