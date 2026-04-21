@@ -2,8 +2,8 @@
 :toc:
 :toclevels: 4
 :sectnums:
-image:https://github.com/kigster/githuh/workflows/Ruby/badge.svg[Ruby,link=https://github.com/kigster/githuh/actions?query=workflow%3ARuby]
-image:docs/img/coverage.svg[Coverage]
+image:https://github.com/kigster/githuh/workflows/Ruby/badge.svg[Ruby,link=https://github.com/kigster/githuh/actions?query=workflow%3ARuby] 
+image:docs/img/badge.svg[Coverage]
 
 = Githuh -- GitHub API client
 

@@ -25,16 +25,16 @@ module Githuh
 
           attr_accessor :filename, :file, :output, :repos, :format, :forks, :private, :record_count
 
-          desc "List owned repositories and render the output in markdown or JSON\n" \
-               "  Default output file is " + DEFAULT_OUTPUT_FORMAT.bold.yellow
+          desc "List owned repositories and render the output in markdown or JSON\n  " \
+               "Default output file is " + DEFAULT_OUTPUT_FORMAT.bold.yellow
 
-          option :file, required: false, desc: 'Output file, overrides ' + DEFAULT_OUTPUT_FORMAT
+          option :file, required: false, desc: "Output file, overrides #{DEFAULT_OUTPUT_FORMAT}"
           option :format, values: FORMATS.keys, default: DEFAULT_FORMAT.to_s, required: false, desc: 'Output format'
           option :forks, type: :string, values: FORK_OPTIONS, default: FORK_OPTIONS.first, required: false, desc: 'Include or exclude forks'
           option :private, type: :boolean, default: nil, required: false, desc: 'If specified, returns only private repos for true, public for false'
 
-          def call(file: nil, format: nil, forks: nil, private: nil, **opts)
-            super(**opts)
+          def call(file: nil, format: nil, forks: nil, private: nil, **)
+            super(**)
 
             self.record_count = 0
             self.forks        = forks
@@ -100,7 +100,7 @@ module Githuh
           def bar_size
             return 1 if client&.last_response.nil?
 
-            client&.last_response.rels[:last].href.match(/page=(\d+).*$/)[1].to_i
+            client&.last_response&.rels&.[](:last)&.href&.match(/page=(\d+).*$/)&.[](1)&.to_i # rubocop:disable Style/SafeNavigationChainLength
           end
 
           def render_as_markdown(repositories)
@@ -120,8 +120,8 @@ module Githuh
 
               ### #{index + 1}. [#{repo.name}](#{repo.url}) (#{repo.stargazers_count} ★)
 
-              #{repo.language ? "**#{repo.language}**. " : ''}
-              #{repo.license ? "Distributed under the **#{repo.license.name}** license." : ''}
+              #{"**#{repo.language}**. " if repo.language}
+              #{"Distributed under the **#{repo.license.name}** license." if repo.license}
 
               #{repo.description}
 
@@ -133,22 +133,22 @@ module Githuh
           def filter_result!(result)
             result.reject! do |r|
               fork_reject = case forks
-              when 'exclude'
-                r.fork
-              when 'only'
-                !r.fork
-              when 'include'
-                false
-              end
+                            when 'exclude'
+                              r.fork
+                            when 'only'
+                              !r.fork
+                            when 'include'
+                              false
+                            end
 
               private_reject = case private
-              when true
-                !r.private
-              when false
-                r.private
-              when nil
-                false
-              end
+                               when true
+                                 !r.private
+                               when false
+                                 r.private
+                               when nil
+                                 false
+                               end
 
               fork_reject || private_reject
             end

@@ -25,3 +25,4 @@ pkg
 *.csv
 .envrc.local
 tmp/**
+/.rubymate

@@ -11,7 +11,7 @@ require 'forwardable'
 require_relative 'githuh/version'
 
 module Githuh
-  BANNER  = "Githuh Version #{VERSION}"
+  BANNER  = "Githuh Version #{VERSION}".freeze
   BINARY  = File.expand_path('../exe/githuh', __dir__).freeze
 
   module CLI
@@ -19,11 +19,9 @@ module Githuh
       extend Dry::CLI::Registry
     end
   end
-end
 
-require 'githuh/cli/launcher'
+  require 'githuh/cli/launcher'
 
-module Githuh
   class << self
     attr_accessor :launcher, :in_test
 
@@ -39,12 +37,12 @@ module Githuh
       end
 
       Kernel.module_eval do
-        def puts(*args)
-          ::Githuh.stdout.puts(*args)
+        def puts(*)
+          ::Githuh.stdout.puts(*)
         end
 
-        def warn(*args)
-          ::Githuh.stderr.puts(*args)
+        def warn(*)
+          ::Githuh.stderr.puts(*)
         end
       end
 

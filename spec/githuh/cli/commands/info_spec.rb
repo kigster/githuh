@@ -4,12 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Githuh::CLI::Commands::User::Info, type: :aruba do
   context 'user info' do
-    let(:args) { %w(user info --help) }
-    include_context 'aruba setup'
-
     subject { output }
 
-    it { should match /Usage/ }
-    it { should match /Command:/ }
+    let(:args) { %w(user info --help) }
+
+    include_context 'aruba setup'
+
+    it { is_expected.to match /Usage/ }
+    it { is_expected.to match /Command:/ }
   end
 end

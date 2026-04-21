@@ -11,7 +11,7 @@
   <g fill="#fff" text-anchor="middle" font-weight="500" font-family="Consolas,DejaVu Sans,Verdana,Geneva,sans-serif" font-size="10">
     <text x="40.5" y="15" fill="#010101" fill-opacity=".3">COVERAGE</text>
     <text x="41.5" y="14">COVERAGE</text>
-    <text x="105.5" y="15" fill="#010101" fill-opacity=".3">68%</text>
-    <text x="106.5" y="14">68%</text>
+    <text x="105.5" y="15" fill="#010101" fill-opacity=".3">0%</text>
+    <text x="106.5" y="14">0%</text>
   </g>
 </svg>

@@ -2,11 +2,14 @@ inherit_from:
   - .rubocop_todo.yml
   - .relaxed-rubocop-2.4.yml
 
-
+plugins:
+  - rubocop-rake
+  - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 4
   UseCache: true
+  NewCops: enable 
   DefaultFormatter: progress
   DisplayStyleGuide: true
   DisplayCopNames: true

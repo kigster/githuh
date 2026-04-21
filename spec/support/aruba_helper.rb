@@ -4,7 +4,7 @@ require 'hashie/mash'
 
 def load_aruba!
   RSpec.shared_context 'aruba setup', shared_context: :aruba_setup do
-    let(:binary) { ::Githuh::BINARY }
+    let(:binary) { Githuh::BINARY }
     let(:command) { "#{binary} #{args.join(' ')}" }
     let(:repos) {
       [
@@ -36,8 +36,6 @@ def load_aruba!
 
     let(:cmd) { last_command_started }
     let(:output) { cmd.stdout.chomp }
-
-    subject { cmd }
   end
 
   RSpec.configure do |rspec|

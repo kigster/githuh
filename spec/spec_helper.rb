@@ -10,17 +10,25 @@ require 'rspec/its'
 require 'timeout'
 
 if ARGV.empty?
-  require 'simplecov'
-  require 'simplecov-formatter-badge'
-
-  SimpleCov.formatter =
-    SimpleCov::Formatter::MultiFormatter.new(
-      [SimpleCov::Formatter::HTMLFormatter,
-       SimpleCov::Formatter::BadgeFormatter]
-    )
+  require "simplecov"
+  require "coverage/badge"
 
   SimpleCov.start do
-    add_filter 'spec/'
+    add_filter "/spec/"
+    self.formatters = SimpleCov::Formatter::MultiFormatter.new(
+      [
+        SimpleCov::Formatter::HTMLFormatter,
+        Coverage::Badge::Formatter
+      ]
+    )
+  end
+
+  SimpleCov.at_exit do
+    SimpleCov.result.format!
+    # rubocop: disable RSpec/Output
+    puts "Coverage: #{SimpleCov.result.covered_percent.round(2)}%"
+    # rubocop: enable RSpec/Output
+    FileUtils.mv("coverage/badge.svg", "docs/img/badge.svg")
   end
 end
 
@@ -39,29 +47,20 @@ RSpec.configure do |spec|
 
   spec.include Aruba::Api
 
-  spec.before(:each) do
-    ::Githuh.in_test = true
+  spec.before do
+    Githuh.in_test = true
   end
 
-  spec.after(:each) do
-    ::Githuh.launcher = nil
+  spec.after do
+    Githuh.launcher = nil
   end
 end
 
 Aruba.configure do |config|
   config.command_launcher = :in_process
-  config.main_class       = ::Githuh::CLI::Launcher
+  config.main_class       = Githuh::CLI::Launcher
 end
 
-::Dir.glob(::File.expand_path('../support/**/*.rb', __FILE__)).each { |f| require(f) }
+Dir.glob(File.expand_path('support/**/*.rb', __dir__)).each { |f| require(f) }
 
 load_aruba!
-
-if ARGV.empty?
-  SimpleCov.at_exit do
-    SimpleCov.result.format!
-    # Moves generated coverage SVG from the ./coverage folder to ./docs/img folder.
-    RunHelper.update_coverage_badge!
-    CoverageBadge.new.generate!
-  end
-end

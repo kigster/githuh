@@ -34,19 +34,18 @@ module Githuh
                  per_page: DEFAULT_PAGE_SIZE,
                  verbose: false,
                  info: true)
-
           self.context  = Githuh
           self.verbose  = verbose
           self.info     = info
           self.token    = api_token || determine_github_token
-          self.per_page = per_page.to_i || DEFAULT_PAGE_SIZE
+          self.per_page = per_page.to_i
 
-          if info
-            begin
-              print_userinfo
-            rescue StandardError
-              nil
-            end
+          return unless info
+
+          begin
+            print_userinfo
+          rescue StandardError
+            nil
           end
         end
 
@@ -56,12 +55,12 @@ module Githuh
 
         protected
 
-        def puts(*args)
-          stdout.puts(*args)
+        def puts(*)
+          stdout.puts(*)
         end
 
-        def warn(*args)
-          stderr.puts(*args)
+        def warn(*)
+          stderr.puts(*)
         end
 
         def user_info
@@ -93,7 +92,7 @@ module Githuh
         end
 
         def determine_github_token
-          @github_token ||= (ENV['GITHUB_TOKEN'] || `git config --global --get user.token`.chomp)
+          @github_token ||= ENV['GITHUB_TOKEN'] || `git config --global --get user.token`.chomp
 
           return @github_token unless @github_token.empty?
 
@@ -108,15 +107,18 @@ module Githuh
         def print_userinfo
           duration = DateTime.now - DateTime.parse(user_info[:created_at].to_s)
           years    = (duration / 365).to_i
-          months   = ((duration - years * 365) / 30).to_i
-          days     = (duration - years * 365 - months * 30).to_i
+          months   = ((duration - (years * 365)) / 30).to_i
+          days     = (duration - (years * 365) - (months * 30)).to_i
 
           lines = []
-          lines << sprintf("  Github API Token: %s", h("#{token[0..9]}#{'.' * 20}#{token[-11..-1]}"))
+          lines << sprintf("  Github API Token: %s", h("#{token[0..9]}#{'.' * 20}#{token[-11..]}"))
           lines << sprintf("      Current User: %s", h(user_info.login))
           lines << sprintf("      Public Repos: %s", h(user_info.public_repos.to_s))
           lines << sprintf("         Followers: %s", h(user_info.followers.to_s))
-          lines << sprintf("        Member For: %s", h(sprintf("%d years, %d months, %d days", years, months, days)))
+          lines << sprintf(
+            "        Member For: %s",
+            h("%<years>d years, %<months>d months, %<days>d days" % { years:, months:, days: })
+          )
 
           self.box = TTY::Box.frame(*lines,
                                     padding: 0,
