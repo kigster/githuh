@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "aruba"
+gem "asciidoctor"
 gem "awesome_print"
 gem "coverage-badge"
 gem "rake"

@@ -24,5 +24,7 @@ pkg
 .ruby-version
 *.csv
 .envrc.local
+.env
 tmp/**
 /.rubymate
+/doc

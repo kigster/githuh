@@ -8,6 +8,7 @@ require "json"
 require "tty/progressbar"
 require "active_support/inflector"
 require "yaml"
+require "csv"
 
 require_relative "../base"
 
@@ -48,6 +49,7 @@ module Githuh
               self.mapping = ::YAML.safe_load_file(mapping)['label-to-estimates'] || {}
             end
 
+            Export.send(:remove_const, :LabelEstimates) if Export.const_defined?(:LabelEstimates)
             Export.const_set(:LabelEstimates, self.mapping)
 
             self.issues = []

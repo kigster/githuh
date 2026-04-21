@@ -9,6 +9,9 @@ require 'dry/cli'
 require 'forwardable'
 
 require_relative 'githuh/version'
+require_relative 'githuh/env_loader'
+
+Githuh::EnvLoader.load!
 
 module Githuh
   BANNER  = "Githuh Version #{VERSION}".freeze
@@ -81,6 +84,7 @@ module Githuh
   end
 end
 
+require 'githuh/llm'
 require 'githuh/cli/commands/base'
 require 'githuh/cli/commands/version'
 require 'githuh/cli/commands/user/info'

@@ -62,5 +62,4 @@ Aruba.configure do |config|
 end
 
 Dir.glob(File.expand_path('support/**/*.rb', __dir__)).each { |f| require(f) }
-
 load_aruba!

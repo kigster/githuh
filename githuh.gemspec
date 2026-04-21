@@ -26,7 +26,10 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activesupport'
   spec.add_dependency 'colored2', '~> 3'
+  spec.add_dependency 'csv'
   spec.add_dependency 'dry-cli'
+  spec.add_dependency 'faraday'
+  spec.add_dependency 'faraday-retry'
   spec.add_dependency 'hashie'
   spec.add_dependency 'octokit'
   spec.add_dependency 'tty-box'

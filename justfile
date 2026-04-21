@@ -8,11 +8,17 @@ recipes:
 
 # Sync all dependencies
 install:
-    {{rbenv}} && bin/setup
+    {{rbenv}} && bundle install -j 12
+
+upgrade:
+    {{rbenv}} && bundle update --bundler
+    {{rbenv}} && bundle update
 
 # Lint and reformat files
 lint-fix *args:
     {{rbenv}} && bundle exec rubocop -a
+    {{rbenv}} && bundle exec rubocop --auto-gen-config
+    git add .
 
 alias format := lint-fix
 
@@ -22,12 +28,17 @@ lint:
 
 # Run all the tests
 test *args: 
-    {{rbenv}} &&  ENVIRONMENT=test bundle exec rspec {{args}}
+    #!/usr/bin/env bash
+    {{rbenv}} && RAILS_ENV=test GITHUB_TOKEN=$(git config user.token) bundle exec rspec {{args}}
 
 # Run tests with coverage
-test-coverage *args:
-    ENVIRONMENT=test COVERAGE=true bundle exec rspec
+test-coverage: test
+    open coverage/index.html
 
+doc:
+    {{rbenv}} && bundle exec rake doc
+    open doc/index.html
+    
 clean:
     #!/usr/bin/env bash
     find . -name .DS_Store -delete -print || true
