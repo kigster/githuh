@@ -1,4 +1,4 @@
-Copyright © 2000-present Konstantin Gredeskoul, all rights reserved.
+Copyright © 2020-2026 Konstantin Gredeskoul, all rights reserved.
 
 MIT License
 

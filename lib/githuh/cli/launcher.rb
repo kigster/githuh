@@ -13,12 +13,10 @@ module Githuh
     class Launcher
       attr_accessor :argv, :stdin, :stdout, :stderr, :kernel, :command
 
-      def initialize(argv, stdin = STDIN, stdout = STDOUT, stderr = STDERR, kernel = nil)
-        if ::Githuh.launcher
-          raise(ArgumentError, "Another instance of CLI Launcher was detected, aborting.")
-        else
-          Githuh.launcher = self
-        end
+      def initialize(argv, stdin = $stdin, stdout = $stdout, stderr = $stderr, kernel = nil)
+        raise(ArgumentError, "Another instance of CLI Launcher was detected, aborting.") if ::Githuh.launcher
+
+        Githuh.launcher = self
 
         self.argv   = argv
         self.stdin  = stdin
@@ -28,7 +26,7 @@ module Githuh
       end
 
       def execute!
-        if argv.empty? || !(%w(--help -h) & argv).empty?
+        if argv.empty? || !!%w(--help -h).intersect?(argv)
           stdout.puts BANNER
           Githuh.configure_kernel_behavior! help: true
         else
@@ -39,17 +37,15 @@ module Githuh
         self.command = ::Dry::CLI.new(::Githuh::CLI::Commands)
         command.call(arguments: argv, out: stdout, err: stderr)
       rescue StandardError => e
-        lines = [e.message.gsub(/\n/, ', ')]
-        if e.backtrace && !(ARGV & %w[-v --verbose]).empty?
+        lines = [e.message.gsub("\n", ', ')]
+        if e.backtrace && !!ARGV.intersect?(%w[-v --verbose])
           lines << ''
           lines.concat(e.backtrace)
         end
 
         box = TTY::Box.frame(*lines,
-                             **BOX_OPTIONS.merge(
-                               width: TTY::Screen.width,
-                               title: { top_center: "┤ #{e.class.name} ├" },
-                             ))
+                             **BOX_OPTIONS, width: TTY::Screen.width,
+                                            title: { top_center: "┤ #{e.class.name} ├" })
         stderr.puts
         stderr.print box
       ensure
@@ -62,7 +58,7 @@ module Githuh
       end
     end
 
-    BANNER = <<~BANNER
+    BANNER = <<~BANNER.freeze
 
       #{'Githuh CLI'.bold.yellow} #{::Githuh::VERSION.bold.green} — API client for Github.com.
       #{'© 2020 Konstantin Gredeskoul, All rights reserved.  MIT License.'.cyan}

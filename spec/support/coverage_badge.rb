@@ -29,7 +29,7 @@ class CoverageBadge
     percentage ||= read_from_file
     output.puts
     output.puts ' • Attempting to generate the Coverage Badge for '.green + sprintf('%.2f%%', percentage).bold.yellow + ' coverage...'.green
-    File.open(badge_image, 'w') { |f| f.write(template('COVERAGE', sprintf('%.2f', percentage))) }
+    File.write(badge_image, template('COVERAGE', sprintf('%.2f', percentage)))
     output.puts ' • Coverage badge SVG was saved into: '.green + badge_image.bold.yellow + '.'.green
     output.puts
   rescue StandardError => e

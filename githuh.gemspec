@@ -22,24 +22,19 @@ Gem::Specification.new do |spec|
   spec.bindir                = 'exe'
   spec.executables           = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths         = ['lib']
-  spec.required_ruby_version = '>= 2.3'
+  spec.required_ruby_version = '~> 4.0'
 
   spec.add_dependency 'activesupport'
   spec.add_dependency 'colored2', '~> 3'
-  spec.add_dependency 'dry-cli', '~> 0.6'
+  spec.add_dependency 'csv'
+  spec.add_dependency 'dry-cli'
+  spec.add_dependency 'faraday'
+  spec.add_dependency 'faraday-retry'
   spec.add_dependency 'hashie'
-  spec.add_dependency 'octokit', '~> 4'
+  spec.add_dependency 'octokit'
   spec.add_dependency 'tty-box'
   spec.add_dependency 'tty-progressbar'
   spec.add_dependency 'tty-screen'
 
-  spec.add_development_dependency 'aruba', '= 1.0.0'
-  spec.add_development_dependency 'awesome_print', '~> 1'
-  spec.add_development_dependency 'bundler', '~> 2'
-  spec.add_development_dependency 'rake', '~> 13'
-  spec.add_development_dependency 'rspec', '~> 3'
-  spec.add_development_dependency 'rspec-its', '~> 1'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'simplecov-formatter-badge'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end

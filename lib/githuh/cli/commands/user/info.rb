@@ -15,8 +15,8 @@ module Githuh
         class Info < Base
           desc "Print user information"
 
-          def call(**opts)
-            super(**opts)
+          def call(**)
+            super
             ap client.user.to_hash
           end
         end

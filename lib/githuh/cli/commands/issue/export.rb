@@ -6,9 +6,9 @@ require "bundler/setup"
 require "dry/cli"
 require "json"
 require "tty/progressbar"
-require "csv"
 require "active_support/inflector"
 require "yaml"
+require "csv"
 
 require_relative "../base"
 
@@ -19,7 +19,7 @@ module Githuh
         class Export < Base
           FORMATS = {
             json: "json",
-            csv: "csv",
+            csv:  "csv",
           }.freeze
 
           DEFAULT_FORMAT = :csv
@@ -27,16 +27,16 @@ module Githuh
 
           attr_accessor :filename, :file, :output, :repo, :issues, :format, :record_count, :mapping
 
-          desc "Export Repo issues into a CSV or JSON format\n" \
-               "  Default output file is " + DEFAULT_OUTPUT_FORMAT.bold.yellow
+          desc "Export Repo issues into a CSV or JSON format\n  " \
+               "Default output file is " + DEFAULT_OUTPUT_FORMAT.bold.yellow
 
           argument :repo, type: :string, required: true, desc: 'Name of the repo, eg "rails/rails"'
-          option :file, required: false, desc: "Output file, overrides " + DEFAULT_OUTPUT_FORMAT
+          option :file, required: false, desc: "Output file, overrides #{DEFAULT_OUTPUT_FORMAT}"
           option :format, values: FORMATS.keys.map(&:to_s), default: DEFAULT_FORMAT.to_s, required: false, desc: "Output format"
           option :mapping, type: :string, require: false, desc: "YAML file with label to estimates mapping"
 
-          def call(repo: nil, file: nil, format: nil, mapping: nil, **opts)
-            super(**opts)
+          def call(repo: nil, file: nil, format: nil, mapping: nil, **)
+            super(**)
 
             self.record_count = 0
             self.repo = repo
@@ -46,9 +46,10 @@ module Githuh
 
             self.mapping = {}
             if mapping && ::File.exist?(mapping)
-              self.mapping = ::YAML.safe_load(::File.read(mapping))['label-to-estimates'] || {}
+              self.mapping = ::YAML.safe_load_file(mapping)['label-to-estimates'] || {}
             end
 
+            Export.send(:remove_const, :LabelEstimates) if Export.const_defined?(:LabelEstimates)
             Export.const_set(:LabelEstimates, self.mapping)
 
             self.issues = []
@@ -139,14 +140,14 @@ module Githuh
                 CSV_HEADER.each do |column|
                   method = column.downcase.underscore.to_sym
                   value = if CSV_MAP[column]
-                      CSV_MAP[column][client, issue]
-                    else
-                      begin
-                        issue.to_h[method]
-                      rescue StandardError
-                        nil
-                      end
-                    end
+                            CSV_MAP[column][client, issue]
+                          else
+                            begin
+                              issue.to_h[method]
+                            rescue StandardError
+                              nil
+                            end
+                          end
                   value = value.strip if value.is_a?(String)
                   row << value
                 end
@@ -166,7 +167,7 @@ module Githuh
           def print_conclusion
             puts
             puts TTY::Box.info("Success: written a total of #{record_count} records to #{filename}",
-                               **{ width: ui_width, padding: 1 })
+                               width: ui_width, padding: 1)
             puts
           end
 
@@ -175,7 +176,7 @@ module Githuh
             puts TTY::Box.info("Format : #{self.format}\n" \
                                "File   : #{filename}\n" \
                                "Repo   : #{repo}\n",
-                               **{ width: ui_width, padding: 1 })
+                               width: ui_width, padding: 1)
             puts
           end
 
