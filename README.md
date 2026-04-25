@@ -348,4 +348,4 @@ just format    # auto-correct rubocop offenses
 
 ## License
 
-© 2020–present Konstantin Gredeskoul, released under the [MIT License](LICENSE.txt).
+© 2020–2026 Konstantin Gredeskoul, released under the [MIT License](LICENSE.txt).
